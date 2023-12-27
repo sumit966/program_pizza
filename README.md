@@ -1,2 +1,87 @@
 # program_pizza
 A C++ program to simulate the system Pizza parlor accepting maximum M orders using circular queue using array. Orders are served in first come first served basis. Order once placed cannot be cancel…
+#include <iostream>
+
+const int MAX_ORDERS = 5;
+
+class CircularQueue {
+private:
+    int front, rear;
+    int orders[MAX_ORDERS];
+
+public:
+    CircularQueue() : front(-1), rear(-1) {}
+
+    bool isEmpty() {
+        return front == -1 && rear == -1;
+    }
+
+    bool isFull() {
+        return (rear + 1) % MAX_ORDERS == front;
+    }
+
+    void enqueue(int order) {
+        if (isFull()) {
+            std::cout << "Sorry, the pizza parlor is full. Cannot accept more orders.\n";
+        } else {
+            if (isEmpty()) {
+                front = rear = 0;
+            } else {
+                rear = (rear + 1) % MAX_ORDERS;
+            }
+            orders[rear] = order;
+            std::cout << "Order " << order << " has been placed successfully.\n";
+        }
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            std::cout << "No orders to serve.\n";
+        } else {
+            int servedOrder = orders[front];
+            std::cout << "Order " << servedOrder << " has been served.\n";
+
+            if (front == rear) {
+                // Last order has been served
+                front = rear = -1;
+            } else {
+                front = (front + 1) % MAX_ORDERS;
+            }
+        }
+    }
+
+    void display() {
+        if (isEmpty()) {
+            std::cout << "No orders to display.\n";
+        } else {
+            int i = front;
+            do {
+                std::cout << orders[i] << " ";
+                i = (i + 1) % MAX_ORDERS;
+            } while (i != (rear + 1) % MAX_ORDERS);
+            std::cout << "\n";
+        }
+    }
+};
+
+int main() {
+    CircularQueue pizzaParlor;
+
+    pizzaParlor.enqueue(1);
+    pizzaParlor.enqueue(2);
+    pizzaParlor.enqueue(3);
+    pizzaParlor.display();
+
+    pizzaParlor.dequeue();
+    pizzaParlor.display();
+
+    pizzaParlor.enqueue(4);
+    pizzaParlor.enqueue(5);
+    pizzaParlor.display();
+
+    pizzaParlor.enqueue(6); // Attempt to enqueue when the parlor is full
+    pizzaParlor.dequeue();
+    pizzaParlor.display();
+
+    return 0;
+}
